@@ -1,93 +1,30 @@
-import { useState } from 'react';
-import { Check, MapPin, Plus } from 'lucide-react-native';
-import { Pressable, Text, View } from 'react-native';
+import { useState, type ReactNode } from 'react';
+import { ArrowLeft, Check, MapPin, Plus, Users } from 'lucide-react-native';
+import { Pressable, Text, TextInput, View } from 'react-native';
+import { booths } from '@data/mockData';
+import type { CampaignEvent, Task, TaskStatus } from '@domain/models';
+import { appModel as model } from '@presentation/state/appModel';
+import { translate as t } from '@presentation/i18n';
 import { colors, common } from '@presentation/theme';
 import { styles } from '@presentation/styles/AppStyles';
-import { translate as t } from '@presentation/i18n';
 import type { Language } from '@presentation/types/navigation';
-import { appModel as model } from '@presentation/state/appModel';
-import type { CampaignEvent, Task } from '@domain/models';
 
-export function TasksView({ language }: { language: Language }) {
+type TasksView = 'list' | 'createTask' | 'createEvent';
+
+export function TasksPage({ language }: { language: Language }) {
   const [tab, setTab] = useState<'tasks' | 'events'>('tasks');
-  return (
-    <>
-      <View style={common.header}>
-        <Text style={common.title}>{t('Tasks & Events', 'कार्य और कार्यक्रम', language)}</Text>
-        <Pressable style={styles.addButton}>
-          <Plus size={16} color="#fff" />
-          <Text style={common.buttonText}>{t('New', 'नया', language)}</Text>
-        </Pressable>
-      </View>
-      <View style={styles.segment}>
-        <Pressable
-          style={[styles.segmentButton, tab === 'tasks' && styles.segmentActive]}
-          onPress={() => setTab('tasks')}
-        >
-          <Text>My Tasks</Text>
-        </Pressable>
-        <Pressable
-          style={[styles.segmentButton, tab === 'events' && styles.segmentActive]}
-          onPress={() => setTab('events')}
-        >
-          <Text>Events</Text>
-        </Pressable>
-      </View>
-      {tab === 'tasks'
-        ? model.tasks.map((task) => <TaskCard task={task} language={language} key={task.id} />)
-        : model.events.map((event) => (
-            <EventCard event={event} language={language} key={event.id} />
-          ))}
-    </>
-  );
+  const [view, setView] = useState<TasksView>('list');
+  if (view === 'createTask') return <CreateTask language={language} onBack={() => setView('list')} />;
+  if (view === 'createEvent') return <CreateEvent language={language} onBack={() => setView('list')} />;
+  return <><View style={common.header}><Text style={common.title}>{t('Tasks & Events', 'कार्य और कार्यक्रम', language)}</Text><Pressable style={styles.addButton} onPress={() => setView(tab === 'tasks' ? 'createTask' : 'createEvent')}><Plus size={16} color="#fff" /><Text style={common.buttonText}>{t('New', 'नया', language)}</Text></Pressable></View><View style={styles.segment}><Pressable style={[styles.segmentButton, tab === 'tasks' && styles.segmentActive]} onPress={() => setTab('tasks')}><Text>{t('My Tasks', 'मेरे कार्य', language)}</Text></Pressable><Pressable style={[styles.segmentButton, tab === 'events' && styles.segmentActive]} onPress={() => setTab('events')}><Text>{t('Events', 'कार्यक्रम', language)}</Text></Pressable></View>{tab === 'tasks' ? model.tasks.map((task) => <TaskCard key={task.id} task={task} language={language} />) : model.events.map((event) => <EventCard key={event.id} event={event} language={language} />)}</>;
 }
 
-export default TasksView;
-function TaskCard({ task, language: _language }: { task: Task; language: Language }) {
-  const done = task.status === 'done';
-  return (
-    <View style={[styles.taskCard, task.status === 'in_progress' && styles.activeBorder]}>
-      <Pressable onPress={() => model.updateTaskStatus(task.id, done ? 'pending' : 'done')}>
-        <Check size={20} color={done ? colors.accent : colors.mutedFg} />
-      </Pressable>
-      <View style={styles.flex}>
-        <Text style={[styles.cardTitle, done && styles.strike]}>{task.title}</Text>
-        <Text style={styles.muted}>
-          <MapPin size={10} /> {task.dueDate.slice(8)} Sep
-        </Text>
-      </View>
-      {!done && (
-        <Pressable
-          onPress={() =>
-            model.updateTaskStatus(
-              task.id,
-              task.status === 'in_progress' ? 'pending' : 'in_progress',
-            )
-          }
-          style={styles.smallTag}
-        >
-          <Text style={styles.accentText}>
-            {task.status === 'in_progress' ? 'Active' : 'Start'}
-          </Text>
-        </Pressable>
-      )}
-    </View>
-  );
-}
-function EventCard({ event, language }: { event: CampaignEvent; language: Language }) {
-  return (
-    <View style={styles.eventCard}>
-      <View style={styles.dateBox}>
-        <Text style={styles.dateMonth}>SEP</Text>
-        <Text style={styles.dateDay}>{event.date.slice(8)}</Text>
-      </View>
-      <View style={styles.flex}>
-        <Text style={styles.cardTitle}>{language === 'hi' ? event.titleHi : event.title}</Text>
-        <Text style={styles.muted}>
-          {event.location} · {event.time}
-        </Text>
-        <Text style={styles.accentText}>{event.rsvp} RSVP</Text>
-      </View>
-    </View>
-  );
-}
+function TaskCard({ task, language }: { task: Task; language: Language }) { const done = task.status === 'done'; const nextStatus: TaskStatus = done ? 'pending' : task.status === 'in_progress' ? 'pending' : 'in_progress'; return <View style={[styles.taskCard, task.status === 'in_progress' && styles.activeBorder]}><Pressable onPress={() => model.updateTaskStatus(task.id, done ? 'pending' : 'done')}><Check size={20} color={done ? colors.accent : colors.mutedFg} /></Pressable><View style={styles.flex}><Text style={[styles.cardTitle, done && styles.strike]}>{language === 'hi' ? task.titleHi : task.title}</Text><Text style={styles.muted}><MapPin size={10} /> {task.dueDate} · {task.type.replace(/_/g, ' ')}</Text></View>{!done && <Pressable style={styles.smallTag} onPress={() => model.updateTaskStatus(task.id, nextStatus)}><Text style={styles.accentText}>{task.status === 'in_progress' ? t('Active', 'जारी', language) : t('Start', 'शुरू करें', language)}</Text></Pressable>}</View>; }
+function EventCard({ event, language }: { event: CampaignEvent; language: Language }) { return <View style={styles.eventCard}><View style={styles.dateBox}><Text style={styles.dateMonth}>SEP</Text><Text style={styles.dateDay}>{event.date.slice(8)}</Text></View><View style={styles.flex}><Text style={styles.cardTitle}>{language === 'hi' ? event.titleHi : event.title}</Text><Text style={styles.muted}>{event.location} · {event.time}</Text><Text style={styles.accentText}><Users size={11} /> {event.rsvp} RSVP</Text>{event.date >= '2024-09-17' && <Pressable style={styles.smallTag} onPress={() => model.rsvpEvent(event.id)}><Text style={styles.accentText}>+ RSVP</Text></Pressable>}</View></View>; }
+
+function CreateTask({ language, onBack }: { language: Language; onBack: () => void }) { const [title, setTitle] = useState(''); const [boothId, setBoothId] = useState('b1'); const [error, setError] = useState(''); const save = () => { if (!title.trim()) return setError(t('Title is required', 'शीर्षक आवश्यक है', language)); model.addTask({ id: `t${Date.now()}`, title: title.trim(), titleHi: title.trim(), type: 'door_to_door', boothId, dueDate: '2024-09-17', status: 'pending' }); onBack(); }; return <FormPage title={t('New Task', 'नया कार्य', language)} language={language} onBack={onBack}><FormInput label={t('Title', 'शीर्षक', language)} value={title} onChangeText={setTitle} placeholder="Task description" /><ChoiceRow label={t('Booth', 'बूथ', language)} value={booths.find((booth) => booth.id === boothId)?.name ?? ''} onPress={() => setBoothId(boothId === 'b1' ? 'b2' : 'b1')} /><Pressable style={common.button} onPress={save}><Text style={common.buttonText}>{t('Save Task', 'कार्य सहेजें', language)}</Text></Pressable>{error ? <Text style={styles.error}>{error}</Text> : null}</FormPage>; }
+function CreateEvent({ language, onBack }: { language: Language; onBack: () => void }) { const [title, setTitle] = useState(''); const [location, setLocation] = useState(''); const [error, setError] = useState(''); const save = () => { if (!title.trim() || !location.trim()) return setError(t('Title and location are required', 'शीर्षक और स्थान आवश्यक हैं', language)); model.addEvent({ id: `e${Date.now()}`, title: title.trim(), titleHi: title.trim(), date: '2024-09-18', time: '10:00 AM', location: location.trim(), type: 'meeting', wardId: 'w4', rsvp: 0, attended: 0 }); onBack(); }; return <FormPage title={t('New Event', 'नया कार्यक्रम', language)} language={language} onBack={onBack}><FormInput label={t('Title', 'शीर्षक', language)} value={title} onChangeText={setTitle} placeholder="Event name" /><FormInput label={t('Location', 'स्थान', language)} value={location} onChangeText={setLocation} placeholder="Venue / address" /><Pressable style={common.button} onPress={save}><Text style={common.buttonText}>{t('Save Event', 'कार्यक्रम सहेजें', language)}</Text></Pressable>{error ? <Text style={styles.error}>{error}</Text> : null}</FormPage>; }
+function FormPage({ title, language: _language, onBack, children }: { title: string; language: Language; onBack: () => void; children: ReactNode }) { return <><View style={common.header}><Pressable style={styles.iconButton} onPress={onBack}><ArrowLeft size={18} color={colors.fg} /></Pressable><Text style={common.title}>{title}</Text><View style={{ width: 40 }} /></View>{children}</>; }
+function FormInput({ label, value, onChangeText, placeholder }: { label: string; value: string; onChangeText: (value: string) => void; placeholder: string }) { return <View><Text style={styles.label}>{label}</Text><TextInput value={value} onChangeText={onChangeText} placeholder={placeholder} placeholderTextColor={colors.mutedFg} style={styles.input} /></View>; }
+function ChoiceRow({ label, value, onPress }: { label: string; value: string; onPress: () => void }) { return <Pressable style={styles.card} onPress={onPress}><View style={styles.flex}><Text style={styles.muted}>{label}</Text><Text style={styles.cardTitle}>{value}</Text></View><Text style={styles.accentText}>Change</Text></Pressable>; }
+export default TasksPage;
