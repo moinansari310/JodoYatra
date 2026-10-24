@@ -1,0 +1,12 @@
+node_modules/
+.gradle/
+*.iml
+.idea/
+local.properties
+*.log
+ios/Pods/
+ios/build/
+android/.cxx/
+android/app/build/
+coverage/
+.DS_Store

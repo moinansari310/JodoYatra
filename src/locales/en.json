@@ -1,0 +1,77 @@
+{
+  "navigation": {
+    "home": "Home",
+    "members": "Members",
+    "voters": "Voters",
+    "tasks": "Tasks",
+    "more": "More"
+  },
+  "auth": {
+    "strongerTogether": "Stronger together",
+    "location": "Bishrampur · Palamu",
+    "campaignApp": "Bishrampur Constituency Campaign App",
+    "phoneNumber": "PHONE NUMBER",
+    "phonePlaceholder": "10-digit mobile number",
+    "invalidPhone": "Enter a valid 10-digit phone number",
+    "continue": "Continue",
+    "demoOtp": "Demo OTP: 1234"
+  },
+  "dashboard": {
+    "location": "Bishrampur Constituency · Palamu, Jharkhand",
+    "role": "Ward Coordinator · Chainpur",
+    "coverage": "coverage",
+    "totalMembers": "Total Members",
+    "voterCoverage": "Voter Coverage",
+    "activeVolunteers": "Active Volunteers",
+    "upcomingEvents": "Upcoming Events",
+    "thisWeek": "+2 this week",
+    "viewDetails": "View details",
+    "nextEvent": "Next Event",
+    "noEvents": "No events",
+    "wardLeaderboard": "Ward Leaderboard",
+    "voters": "voters"
+  },
+  "members": {
+    "title": "Members",
+    "add": "Add",
+    "searchPlaceholder": "Search name, phone, village...",
+    "detail": "Member Detail",
+    "digitalCard": "Digital Membership Card"
+  },
+  "voters": {
+    "title": "Voter Tracker",
+    "booth": "Govt. Primary School No. 1",
+    "totalVoters": "total voters",
+    "all": "All",
+    "coverage": "coverage",
+    "year": "yr"
+  },
+  "tasks": {
+    "title": "Tasks & Events",
+    "new": "New",
+    "myTasks": "My Tasks",
+    "events": "Events",
+    "active": "Active",
+    "start": "Start",
+    "sep": "Sep",
+    "rsvp": "RSVP"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "notifications": "Notifications",
+    "eventReminders": "Event Reminders",
+    "newTask": "New Task Assigned",
+    "logout": "Log Out"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "newTask": "New task assigned",
+    "eventReminder": "Event reminder",
+    "milestone": "Coverage milestone reached!",
+    "announcement": "Announcement from HQ",
+    "pendingMember": "New member pending approval",
+    "taskBody": "Door-to-door survey — Naya Tola is due today",
+    "campaignUpdate": "Chainpur campaign update"
+  }
+}

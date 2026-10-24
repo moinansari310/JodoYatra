@@ -1,0 +1,10 @@
+{
+  "description": "Streamline political campaign management and membership tracking for coordinators and volunteers in Bishrampur, enhancing voter engagement and organization.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

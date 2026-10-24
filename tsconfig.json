@@ -1,0 +1,17 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/presentation/components/*"],
+      "@data/*": ["src/data/*"],
+      "@domain/*": ["src/domain/*"],
+      "@navigation/*": ["src/presentation/navigation/*"],
+      "@locales/*": ["src/locales/*"],
+      "@screens/*": ["src/presentation/pages/*"],
+      "@presentation/*": ["src/presentation/*"]
+    }
+  },
+  "exclude": ["extracted-app", "node_modules"]
+}
